@@ -1,10 +1,4 @@
-/**
- *Submitted for verification at Etherscan.io on 2021-08-06
-*/
-
 // SPDX-License-Identifier: MIT
-
-// GO TO LINE 1904 TO SEE WHERE THE BABY CONTRACT STARTS
  
 // File: @openzeppelin/contracts/utils/Context.sol
 
