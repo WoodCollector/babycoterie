@@ -2102,7 +2102,7 @@ contract BabyCoterie is ERC721A, Ownable {
         require(numberOfTokens > 0 && numberOfTokens <= maxBabyPurchase, "Can only mint 20 tokens at a time");
 
         //Reserved for OG whitelist
-        require(totalSupply().add(numberOfTokens) <= MAX_BABIES-300 || bypassMintLimit == true, "Purchase would exceed max supply of Babies");
+        require(totalSupply().add(numberOfTokens) <= MAX_BABIES-300 || bypassMintLimit == true, "Purchase would exceed max supply of Babies, 300 are reserved for the team");
         
         require(totalSupply().add(numberOfTokens) <= MAX_BABIES, "Purchase would exceed max supply of Babies" );
         require(msg.value >= babyPrice.mul(numberOfTokens), "Ether value sent is not correct");
