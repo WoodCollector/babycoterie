@@ -2100,7 +2100,7 @@ contract BabyCoterie is ERC721A, Ownable {
     function whitelistMintBaby() public {
         require(whitelistedAddresses[msg.sender], "You're not on the whitelist or have already minted your baby.");
         require(whitelistSaleIsActive, "Sale must be active to mint a Baby");
-        // require(totalSupply() < 500, "All free babies have already been minted");
+        require(totalSupply().add(1) <= MAX_BABIES, "Purchase would exceed max supply of Babies");
         _safeMint(msg.sender,1);
         whitelistedAddresses[msg.sender] = false;
     }
