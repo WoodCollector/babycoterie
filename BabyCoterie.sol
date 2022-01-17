@@ -1994,6 +1994,8 @@ contract BabyCoterie is ERC721A, Ownable {
     
     bool public uriIsFrozen = false;
 
+    bool public bypassMintLimit = false;
+
     address public constant ADDRESS_DEV = 0x7DF76FDEedE91d3cB80e4a86158dD9f6D206c98E;
 
     address public constant ADDRESS_ART = 0xE1F04a8e7609482B0A96a4636bb2d0211e3A4fF9;
@@ -2046,6 +2048,10 @@ contract BabyCoterie is ERC721A, Ownable {
         saleIsActive = !saleIsActive;
     }
 
+    function flipBypassMintLimit() public onlyOwner {
+        bypassMintLimit = !bypassMintLimit;
+    }
+
     function flipWhitelistSaleState() public onlyOwner {
         whitelistSaleIsActive = !whitelistSaleIsActive;
     }
@@ -2092,7 +2098,11 @@ contract BabyCoterie is ERC721A, Ownable {
     function publicMintBaby(uint numberOfTokens) public payable {
         require(saleIsActive, "Sale must be active to mint a Baby");
         require(numberOfTokens > 0 && numberOfTokens <= maxBabyPurchase, "Can only mint 20 tokens at a time");
-        require(totalSupply().add(numberOfTokens) <= MAX_BABIES, "Purchase would exceed max supply of Babies");
+
+        //Reserved for OG whitelist
+        require(totalSupply().add(numberOfTokens) <= MAX_BABIES-700 || bypassMintLimit == true, "Purchase would exceed max supply of Babies");
+        
+        require(totalSupply().add(numberOfTokens) <= MAX_BABIES, "Purchase would exceed max supply of Babies" );
         require(msg.value >= babyPrice.mul(numberOfTokens), "Ether value sent is not correct");
         _safeMint(msg.sender, numberOfTokens);
     }
