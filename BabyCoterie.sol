@@ -1986,6 +1986,8 @@ contract BabyCoterie is ERC721A, Ownable {
 
     uint public constant maxBabyPurchase = 20;
 
+    uint public freeBabiesClaimed = 0;
+
     uint256 public constant MAX_BABIES = 10000;
 
     bool public saleIsActive = false;
@@ -2002,7 +2004,7 @@ contract BabyCoterie is ERC721A, Ownable {
     
     address public ADDRESS_TEAM = 0x0709C9feEeA75ad21153808fB0094a3aE2F44e94;
 
-    mapping(address => bool) whitelistedAddresses;
+    mapping(address => bool) blacklistedAddresses;
     
     
     event licenseisLocked(string _licenseText);
@@ -2100,30 +2102,29 @@ contract BabyCoterie is ERC721A, Ownable {
         require(numberOfTokens > 0 && numberOfTokens <= maxBabyPurchase, "Can only mint 20 tokens at a time");
 
         //Reserved for OG whitelist
-        require(totalSupply().add(numberOfTokens) <= MAX_BABIES-700 || bypassMintLimit == true, "Purchase would exceed max supply of Babies");
+        require(totalSupply().add(numberOfTokens) <= MAX_BABIES-300 || bypassMintLimit == true, "Purchase would exceed max supply of Babies");
         
+        require(totalSupply().add(numberOfTokens) <= MAX_BABIES, "Purchase would exceed max supply of Babies" );
+        require(msg.value >= babyPrice.mul(numberOfTokens), "Ether value sent is not correct");
+        _safeMint(msg.sender, numberOfTokens);
+    }
+
+      function ownerMintBaby(uint numberOfTokens) public payable onlyOwner {
         require(totalSupply().add(numberOfTokens) <= MAX_BABIES, "Purchase would exceed max supply of Babies" );
         require(msg.value >= babyPrice.mul(numberOfTokens), "Ether value sent is not correct");
         _safeMint(msg.sender, numberOfTokens);
     }
     
     function whitelistMintBaby() public {
-        require(whitelistedAddresses[msg.sender], "You're not on the whitelist or have already minted your baby.");
+        require(blacklistedAddresses[msg.sender] == false, "You have already minted your free baby");
         require(whitelistSaleIsActive, "Sale must be active to mint a Baby");
         require(totalSupply().add(1) <= MAX_BABIES, "Purchase would exceed max supply of Babies");
+        require(freeBabiesClaimed < 750, "All 750 free babies have already been minted");
         _safeMint(msg.sender,1);
-        whitelistedAddresses[msg.sender] = false;
+        blacklistedAddresses[msg.sender] = true;
+        freeBabiesClaimed++;
     }
 
-    function addAddressToWhitelist(address _addressToWhitelist) onlyOwner public {
-      whitelistedAddresses[_addressToWhitelist] = true;
-    }
-
-    function addAddressesToWhitelist(address[] memory _operators) onlyOwner public {
-      for (uint256 i = 0; i < _operators.length; i++){
-        addAddressToWhitelist(_operators[i]);
-      }
-    }
     
     
 
