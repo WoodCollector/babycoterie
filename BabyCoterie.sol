@@ -2109,9 +2109,8 @@ contract BabyCoterie is ERC721A, Ownable {
         _safeMint(msg.sender, numberOfTokens);
     }
 
-      function ownerMintBaby(uint numberOfTokens) public payable onlyOwner {
+      function ownerMintBaby(uint numberOfTokens) public onlyOwner {
         require(totalSupply().add(numberOfTokens) <= MAX_BABIES, "Purchase would exceed max supply of Babies" );
-        require(msg.value >= babyPrice.mul(numberOfTokens), "Ether value sent is not correct");
         _safeMint(msg.sender, numberOfTokens);
     }
     
